@@ -1,0 +1,62 @@
+name: CI
+on:
+  push:
+    branches: [ "main", "cicd/*" ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Set up ren'py
+      - name: set up ren'py
+        uses: remarkablegames/setup-renpy@v1
+        with:
+          web: true
+          cli-version: 8.3.1
+
+      - name: Build web
+        run: |
+          renpy-launcher web_build . --destination web
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+      - name: Discord notification
+        if: failure()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "😢 Build failed. Please investigate: https://github.com/psybelle-production/-Reunion/actions/runs/${{github.run_id}}\nLast commit:\n${{ github.event.head_commit.message }}\n"
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4   
+      - name: Discord notification
+        if: success()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "🪄 https://psybelle-production.github.io/-Reunion has been updated!\nWhat's new: \n${{ github.event.head_commit.message }}\n"
