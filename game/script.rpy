@@ -2,9 +2,7 @@
 
 # Declare characters used by this game. The color argument colorizes the
 # name of the character.
-
-define n = Character("Nia", image="nia")
-define a = Character("Aurelia", image="aurelia")
+define e = Character("Eileen")
 
 # The game starts here.
 
@@ -22,8 +20,8 @@ label start:
 
     # These display lines of dialogue.
  
- n "You should be able to pull up by the entrance, I know the family that owns this place."
+    e "You've created a new Ren'Py game."
 
-    "Looking at the rear view mirror I saw the cabbie nod in agreement."
+    e "Once you add a story, pictures, and music, you can release it to the world!"
 
     return
