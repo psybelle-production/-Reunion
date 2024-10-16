@@ -22,5 +22,8 @@ label start:
 
     # These display lines of dialogue.
  
+ n "You should be able to pull up by the entrance, I know the family that owns this place."
+
+    "Looking at the rear view mirror I saw the cabbie nod in agreement."
 
     return
